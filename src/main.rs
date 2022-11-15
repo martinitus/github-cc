@@ -4,6 +4,7 @@ use web_sys::{Document, HtmlDivElement, Window, HtmlImageElement};
 use wasm_bindgen_futures::spawn_local;
 use wasm_bindgen::JsCast;
 use futures::StreamExt;
+use surf::Client;
 use gh_wasm::gh_api::{GHClient, GHRepository, GHUser};
 
 
@@ -37,8 +38,8 @@ fn render_avatars(users: Vec<GHUser>) {
 }
 
 async fn fetch_and_render_users() {
-    let client = GHClient::new(Some("XYZ".to_string()));
-    let users = client.get_org_members("codecentric").await;
+    let client = GHClient::new(Client::new(), Some("xyz".to_string()));
+    let users = client.get_org_members("codecentric").await.unwrap();
 
     // create a stream of (username, repositories) pairs. An item in the stream will become available
     // once its underlying fetch request is finished.

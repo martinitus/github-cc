@@ -30,7 +30,7 @@ web-sys = { version = "0.3.60", features = [
     'RequestMode',
     'Response',
 ] }
-gloo-net = { version = "0.2.4", features = ["http"] }
+surf = { version = "2.3.2", default-features = false, features = ["wasm-client"] }
 gloo-storage = "0.2.2"
 gloo-utils = { version = "0.1.5", features = ["serde"] }
 log = "0.4.17"
