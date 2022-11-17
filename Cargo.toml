@@ -36,5 +36,8 @@ gloo-utils = { version = "0.1.5", features = ["serde"] }
 log = "0.4.17"
 wasm-logger = "0.2.0"
 
+# cannot use polar/fmt as that requires system cursor binding...
+polars = { version = "0.25.1", default-features = false, features = [] }
+
 [dev-dependencies]
 wasm-bindgen-test = "0.3.33"

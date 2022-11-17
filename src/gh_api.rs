@@ -145,3 +145,27 @@ impl GHClient {
     }
 }
 
+
+#[cfg(test)]
+mod tests {
+    use surf::Client;
+    use crate::gh_api::GHClient;
+
+    #[test]
+    async fn test_get_repos_single_page() {
+        let client = GHClient::new(Client::new(), None);
+        let repos = client.get_user_repositories("maiksensi").await;
+        assert!(repos.is_ok());
+        // make sure below number matches with https://github.com/maiksensi
+        assert_eq!(29, repos.unwrap().len());
+    }
+
+    #[test]
+    async fn test_get_repos_multi_page() {
+        let client = GHClient::new(Client::new(), None);
+        let repos = client.get_user_repositories("jonashackt").await;
+        assert!(repos.is_ok());
+        // make sure below number matches with https://github.com/jonashackt
+        assert_eq!(145, repos.unwrap().len());
+    }
+}

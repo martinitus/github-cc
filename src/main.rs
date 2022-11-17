@@ -5,6 +5,7 @@ use wasm_bindgen_futures::spawn_local;
 use wasm_bindgen::JsCast;
 use futures::StreamExt;
 use surf::Client;
+use polars::prelude::*;
 use gh_wasm::gh_api::{GHClient, GHRepository, GHUser};
 
 
@@ -24,10 +25,24 @@ impl GithubRepository {
 }
 
 
-fn render_avatars(users: Vec<GHUser>) {
+fn render_avatars(users: Vec<GHUser>, users_df: PolarsResult<DataFrame>, repos_df: PolarsResult<DataFrame>) {
     let window = web_sys::window().unwrap();
     let document: Document = window.document().expect("no document?");
+    log::info!("names {:?}", repos_df.as_ref().unwrap().dtypes());
+    log::info!("names {:?}", repos_df.as_ref().unwrap().fields());
     let root: HtmlDivElement = document.get_element_by_id("root").unwrap().unchecked_into();
+    let r1 = repos_df.as_ref().unwrap().groupby(["UserName"]);
+    log::info!("r1: {:?}",r1);
+    // if r1.is_ok() {
+    //     // let r2 = r1.unwrap().select(["UserName", "Language"]).count();
+    //     log::info!("ok");
+    //     // log::info!("r2: {:?}",r2);
+    // }else{
+    //     log::info!("err");
+    //     // log::info!("erro: {:?}", r1.as_ref().unwrap_err());
+    // }
+    //
+
     for user in users {
         let img: HtmlImageElement = root.append_child(&document.create_element("img").unwrap()).unwrap().unchecked_into();
         img.set_attribute("src", &user.avatar_url).unwrap();
@@ -38,7 +53,7 @@ fn render_avatars(users: Vec<GHUser>) {
 }
 
 async fn fetch_and_render_users() {
-    let client = GHClient::new(Client::new(), Some("xyz".to_string()));
+    let client = GHClient::new(Client::new(), Some("XYZ".to_string()));
     let users = client.get_org_members("codecentric").await.unwrap();
 
     // create a stream of (username, repositories) pairs. An item in the stream will become available
@@ -62,9 +77,59 @@ async fn fetch_and_render_users() {
             }
         ).collect()
         .await;
-    log::debug!("repos: {user_repos:?}");
+
+    let users_df: PolarsResult<DataFrame> = {
+        let names = Series::new("UserName", users.iter().map(|u| u.login.clone()).collect::<Vec<String>>());
+        let avatars = Series::new("Avatar", users.iter().map(|u| u.avatar_url.clone()).collect::<Vec<String>>());
+        DataFrame::new(vec![names, avatars])
+    };
+    if users_df.is_ok() {
+        log::info!("The users df: {:?}", users_df.as_ref().unwrap());
+    } else {
+        log::error!("Failed to build users df: {:?}", users_df.as_ref().unwrap_err());
+    }
+
+    let repos_df: PolarsResult<DataFrame> = {
+        let names = Series::new(
+            "UserName",
+            ["A", "B"], // user_repos
+            //     .iter()
+            //     .map(
+            //         |(login, repos)|
+            //             std::iter::repeat(login.clone()).take(repos.len())
+            //     ).flatten().collect::<Vec<String>>(),
+        );
+        let repos = Series::new(
+            "Repository",
+            ["R1", "R2"],// user_repos
+            //     .iter()
+            //     .map(
+            //         |(login, repos)|
+            //             repos.iter().map(|r| r.name.clone())
+            //     ).flatten().collect::<Vec<String>>(),
+        );
+        let languages = Series::new(
+            "Language",
+            ["l1", "l2"],// user_repos
+            //     .iter()
+            //     .map(
+            //         |(login, repos)|
+            //             repos.iter().map(|r| r.language.clone())
+            //     ).flatten().collect::<Vec<Option<String>>>(),
+        );
+        DataFrame::new(vec![names, repos, languages])
+    };
+
+    if repos_df.is_ok() {
+        log::info!("The repos df: {:?}", repos_df.as_ref().unwrap());
+    } else {
+        log::error!("Failed to build repos df: {:?}", repos_df.as_ref().unwrap_err());
+    }
+
+
+    // log::debug!("repos: {user_repos:?}");
     // let repos = get_user_repositories(&token, &users[0].login).await;
-    // render_avatars(users);
+    render_avatars(users, users_df, repos_df);
 }
 
 // #[wasm_bindgen]
