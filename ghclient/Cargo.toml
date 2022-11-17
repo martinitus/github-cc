@@ -1,0 +1,22 @@
+[package]
+name = "gh-client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+regex = "1.7.0"
+futures = "0.3.25"
+anyhow = "1.0.66"
+serde = { version = "1.0.80", features = ["derive"] }
+surf = { version = "2.3.2", default-features = false, features = [] }
+log = "0.4.17"
+
+# cannot use polar/fmt as that requires system cursor binding...
+polars = { version = "0.25.1", default-features = false, features = [] }
+
+[dev-dependencies]
+dotenv = "0.15.0"
+rstest = "0.15.0"
+# unfortunately the http-client crate (dependency of surf) still uses a very old tokio version
+tokio = { version = "0.2.25", features = ["macros", "rt-core", "net"] }
+surf = { version = "2.3.2", default-features = false, features = ["hyper-client"] }

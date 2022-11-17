@@ -1,43 +1,5 @@
-[package]
-name = "gh-wasm"
-version = "0.1.0"
-edition = "2021"
-
-#[lib]
-#crate-type = ["cdylib"]
-
-[dependencies]
-js-sys = "0.3.60"
-regex = "1.7.0"
-wasm-bindgen = { version = "0.2.83", features = ["serde-serialize"] }
-futures = "0.3.25"
-wasm-bindgen-futures = "0.4.33"
-serde = { version = "1.0.80", features = ["derive"] }
-web-sys = { version = "0.3.60", features = [
-    'console',
-    'Window',
-    'Document',
-    'Node',
-    'Element',
-    'HtmlElement',
-    'HtmlDivElement',
-    'HtmlImageElement',
-    'Storage',
-    'HtmlDialogElement',
-    'Headers',
-    'Request',
-    'RequestInit',
-    'RequestMode',
-    'Response',
-] }
-surf = { version = "2.3.2", default-features = false, features = ["wasm-client"] }
-gloo-storage = "0.2.2"
-gloo-utils = { version = "0.1.5", features = ["serde"] }
-log = "0.4.17"
-wasm-logger = "0.2.0"
-
-# cannot use polar/fmt as that requires system cursor binding...
-polars = { version = "0.25.1", default-features = false, features = [] }
-
-[dev-dependencies]
-wasm-bindgen-test = "0.3.33"
+[workspace]
+members = [
+    "app",
+    "ghclient"
+]

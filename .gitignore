@@ -1,5 +1,7 @@
 .env
 .idea
 Cargo.lock
+*/dist
+*/target
 /dist
 /target
