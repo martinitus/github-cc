@@ -1,5 +1,0 @@
-[workspace]
-members = [
-    "gh-frontend-app",
-    "gh-client"
-]
