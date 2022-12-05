@@ -1,5 +1,5 @@
 [workspace]
 members = [
-    "app",
-    "ghclient"
+    "gh-frontend-app",
+    "gh-client"
 ]

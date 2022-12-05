@@ -1,10 +1,10 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use regex::Regex;
 use surf::{Client, Request, Response, StatusCode};
 use surf::http::Method;
 use anyhow::{anyhow, Result};
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct GHUser {
     pub login: String,
     pub id: usize,
@@ -12,7 +12,7 @@ pub struct GHUser {
     pub avatar_url: String,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct GHRepository {
     pub name: String,
     pub language: Option<String>,

@@ -1,5 +1,5 @@
 [package]
-name = "gh-wasm"
+name = "gh-frontend-app"
 version = "0.1.0"
 edition = "2021"
 
@@ -13,6 +13,7 @@ wasm-bindgen = { version = "0.2.83", features = ["serde-serialize"] }
 futures = "0.3.25"
 wasm-bindgen-futures = "0.4.33"
 serde = { version = "1.0.80", features = ["derive"] }
+serde_json = "1.0.87"
 web-sys = { version = "0.3.60", features = [
     'console',
     'Window',
@@ -21,8 +22,15 @@ web-sys = { version = "0.3.60", features = [
     'Element',
     'HtmlElement',
     'HtmlDivElement',
+    'HtmlInputElement',
     'HtmlImageElement',
+    'HtmlLabelElement',
+    'HtmlLiElement',
+    'HtmlParagraphElement',
+    'HtmlProgressElement',
+    'HtmlUListElement',
     'Storage',
+    'InputEvent',
     'HtmlDialogElement',
     'Headers',
     'Request',
@@ -36,8 +44,8 @@ gloo-utils = { version = "0.1.5", features = ["serde"] }
 log = "0.4.17"
 wasm-logger = "0.2.0"
 
-# cannot use polar/fmt as that requires system cursor binding...
-polars = { version = "0.25.1", default-features = false, features = [] }
+# pull in gh-client from local workspace for now
+gh-client = { path = "../gh-client" }
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.33"
